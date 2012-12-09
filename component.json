@@ -4,12 +4,14 @@
   "description": "create rich forms dynamically by providing a JSON schema",
   "version": "0.0.1",
   "keywords": ["form", "json", "dynamic"],
-  "dependencies": {},
+  "dependencies": {
+    "component/emitter": "*"
+  },
   "development": {},
   "license": "MIT",
   "scripts": [
     "index.js",
-    "template.js"
+    "field.js"
   ],
   "styles": [
     "forms.css"

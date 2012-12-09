@@ -1,7 +1,8 @@
 /**
  * Module dependencies.
  */
-
+var Field = require('./field')
+  , Emitter = require('emitter');
 
 
 /**
@@ -20,5 +21,52 @@ module.exports = Form;
  */
 
 function Form(schema, data) {
+  if (!schema) throw Error('No schema provided');
+  this.schema = schema;
+  this.data = data;
+}
+
+/**
+ * Mixin emitter.
+ */
+
+Emitter(Form.prototype);
+
+/**
+ * Iterates through all attributes in `this.schema`
+ * and renders fields.
+ *
+ * @return {Form} self
+ * @api public
+ */
+
+Form.prototype.render = function() {
+  var self = this;
+    , view = document.createElement('div');
   
+  this.view = view;
+  
+  for (var name in this.schema) {
+    var attribute = this.schema[name]
+      , custom = []
+      , data;
+    
+    if (this.data) data = this.data[name];
+      
+    this.emit('attribute', name, attribute, function(dom){
+      custom.push(dom);
+    })
+    
+    if (custom.length > 1) {
+      custom.forEach(function(item){
+        view.appendChild(item);
+      });
+      continue;    
+    }
+    
+    var field = new Field(name, attribute, data);
+    view.appendChild(field.render().view);
+  }
+  
+  return this;
 }

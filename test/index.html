@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <script src="../build/build.js"></script>
+    <script>
+      var Form = require('forms')
+      
+      form = new Form({book:{title:"Book Title", type:"String"}})
+      
+      form.on('attribute', function(a,b,c){
+        c(document.createElement('span'))
+      })
+      
+      form.on('attribute', function(a,b,c){
+        c(document.createElement('a'))
+      })
+      
+      form.render()
+    </script>
+  </body>
+</html>
