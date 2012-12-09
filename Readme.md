@@ -1,4 +1,3 @@
-
 # forms
 
   create rich forms dynamically by providing a JSON schema
@@ -7,7 +6,8 @@
 
     $ component install nickjackson/forms
 
-## Example Schema
+## Spec
+[wiki/Spec](https://github.com/nickjackson/forms/wiki/Spec)
 
 
 ## Todo
