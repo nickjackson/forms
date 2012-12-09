@@ -7,6 +7,14 @@
 
     $ component install nickjackson/forms
 
+## Example Schema
+
+
+## Todo
+* Everything
+* Add Tests!
+* Validation
+
 ## API
 
    

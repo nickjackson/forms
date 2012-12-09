@@ -3,7 +3,7 @@
   "repo": "nickjackson/forms",
   "description": "create rich forms dynamically by providing a JSON schema",
   "version": "0.0.1",
-  "keywords": [],
+  "keywords": ["form", "json", "dynamic"],
   "dependencies": {},
   "development": {},
   "license": "MIT",
