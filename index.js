@@ -49,6 +49,7 @@ Form.prototype.render = function() {
     , view = document.createElement('div');
   
   this.view = view;
+  view.className = 'form'
   
   for (var name in this.schema) {
     

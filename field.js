@@ -50,6 +50,7 @@ Field.prototype.render = function() {
     , label = document.createElement('label')
 
   this.view = document.createElement('div');
+  this.view.className = 'property';
   
   switch (params.type) {
     case 'Boolean': 
@@ -62,15 +63,14 @@ Field.prototype.render = function() {
 
     case 'Object':
       var Form = require('./index');
-      var nestedProps = nestProperties(params.properties, this.name);
-      var nestedForm = new Form(nestedProps, this.data);
+      var properties = nestProperties(params.properties, this.name);
+      
+      var form = new Form(properties, this.data);
+      form.render();
+      form.view.className = form.view.className + ' nested';
 
-      var nestedDiv = document.createElement('div');
-      nestedDiv.className = 'nested';
-
-      nestedDiv.appendChild(nestedForm.render().view);
       this.view.appendChild(this.label());
-      this.view.appendChild(nestedDiv);
+      this.view.appendChild(form.view);
       break;
 
     case 'Number':

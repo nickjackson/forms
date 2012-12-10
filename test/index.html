@@ -2,6 +2,8 @@
   <head>
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../build/build.css" type="text/css">
+    
   </head>
   <body>
     <script src="../build/build.js"></script>
@@ -46,7 +48,7 @@
       
       form.render()
       
-      document.body.innerHTML = form.view.innerHTML
+      document.body.appendChild(form.view)
     </script>
   </body>
 </html>
