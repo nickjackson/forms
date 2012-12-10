@@ -52,6 +52,8 @@ Field.prototype.render = function() {
   this.view = document.createElement('div');
   this.view.className = 'property';
   
+  this.id = this.name + Math.random().toString().substr(3, 10)
+  
   switch (params.type) {
     case 'Boolean': 
       this.view.appendChild(this.checkbox());
@@ -63,11 +65,8 @@ Field.prototype.render = function() {
 
     case 'Object':
       var Form = require('./index');
-      var properties = nestProperties(params.properties, this.name);
-      var data = nestProperties(this.data, this.name)
-      
-      var form = new Form(properties, data);
-      form.render();
+      var form = new Form(params.properties, this.data);
+      form.render()
       form.view.className = form.view.className + ' nested';
 
       this.view.appendChild(this.label());
@@ -100,8 +99,7 @@ Field.prototype.render = function() {
 Field.prototype.text = function() {
   var field = document.createElement('input');
   field.setAttribute('type', 'text');
-  field.setAttribute('name', this.name);
-  field.setAttribute('id', underscore(this.name));
+  field.setAttribute('id', this.id);
   if (this.data) field.setAttribute('value', this.data);
   return field;
 }
@@ -118,7 +116,7 @@ Field.prototype.text = function() {
 Field.prototype.label = function() {
   var field = document.createElement('label');
   field.innerText = this.params.title
-  field.setAttribute('for', underscore(this.name));
+  field.setAttribute('for', this.id);
   return field;
 }
 
@@ -133,8 +131,7 @@ Field.prototype.label = function() {
 Field.prototype.checkbox = function() {
   var field = document.createElement('input');
   field.setAttribute('type', 'checkbox');
-  field.setAttribute('name', this.name);
-  field.setAttribute('id', underscore(this.name));
+  field.setAttribute('id', this.id);
   if (this.data) field.checked = this.data
   return field;
 }
@@ -150,47 +147,14 @@ Field.prototype.checkbox = function() {
 Field.prototype.select = function() {
   var field = document.createElement('select');
   field.setAttribute('name', this.name);
-  field.setAttribute('id', underscore(this.name));
+  field.setAttribute('id', this.id);
   for (var opt in this.params.options) {
     var option = document.createElement('option');
     var text = this.params.options[opt];
     option.setAttribute('value', opt);
-    option.innerText = text
-    if (this.data == opt) option.setAttribute('selected', true)
+    option.innerText = text;
+    if (this.data == opt) option.setAttribute('selected', true);
     field.appendChild(option);
   }
   return field;
-}
-
-
-/**
- * Helper to wrap square brackets around all keys of
- * `properties` and then prefix with `parent`
- *
- * @param {Object} properties
- * @param {String} parent
- * @return {Object} nested
- * @api private
- */
-
-function nestProperties(properties, parent) {
-  var nested = {};
-  for (var prop in properties) {
-    nested[parent + '[' + prop + ']'] = properties[prop];
-  }
-  return nested;
-}
-
-
-/**
- * Helper to replace square brackets around `Str`
- * and replace with underscore
- *
- * @param {String} str
- * @return {String} str
- * @api private
- */
-
-function underscore(str) {
-  return str.replace('][', '_').replace('[', '_').replace(']', '')
 }
