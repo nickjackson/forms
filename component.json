@@ -2,7 +2,7 @@
   "name": "forms",
   "repo": "nickjackson/forms",
   "description": "create rich forms dynamically by providing a JSON schema",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "keywords": ["form", "json", "dynamic"],
   "dependencies": {
     "component/emitter": "*"
