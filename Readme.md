@@ -13,6 +13,7 @@
 ## Todo
 * Add Date/Calendar functionality
 * Add Repeats
+* Add component/Model support?
 * Add Tests
 * Validation
 
