@@ -1,14 +1,15 @@
 /**
  * Module dependencies.
  */
-var Emitter = require('emitter')
-  , Form = require('./index')
+var Emitter = require('emitter');
+
 
 /**
  * Expose `Field`.
  */
 
 module.exports = Field;
+
 
 /**
  * Initialize a new `Field` with a `name` and
@@ -20,14 +21,15 @@ module.exports = Field;
  * @api public
  */
 
-function Field(name, properties, data) {
+function Field(name, params, data) {
   if (!name) throw Error('No name provided');
-  if (!properties) throw Error('No properties provided');
-  
+  if (!params) throw Error('No parameters provided');
+
   this.name = name;
-  this.properties = properties;
+  this.params = params;
   this.data = data;
 }
+
 
 /**
  * Mixin emitter.
@@ -35,34 +37,157 @@ function Field(name, properties, data) {
 
 Emitter(Field.prototype);
 
+
 /**
- *
- *
+ * Creates elements for the particular type of fields
  *
  * @return {Field} self
  * @api public
  */
 
 Field.prototype.render = function() {
-  var props = this.properties
-    , label = document.createElement('label');
-  
+  var params = this.params
+    , label = document.createElement('label')
+
   this.view = document.createElement('div');
   
-  if (props.type == "Boolean") {
-    field = document.createElement('input');
-    field.setAttribute('type', 'checkbox');
-    this.view.appendChild(field);
-    
-    
-  } else if (props.type == "Date") {
-    
-  } else if (props.type == "Object") {
-    
-  } else if (props.options) {
-    
-  } else {
-    
+  switch (params.type) {
+    case 'Boolean': 
+      this.view.appendChild(this.checkbox());
+      this.view.appendChild(this.label());
+      break;
+
+    case 'Date':
+      break;
+
+    case 'Object':
+      var Form = require('./index');
+      var nestedProps = nestProperties(params.properties, this.name);
+      var nestedForm = new Form(nestedProps, this.data);
+
+      var nestedDiv = document.createElement('div');
+      nestedDiv.className = 'nested';
+
+      nestedDiv.appendChild(nestedForm.render().view);
+      this.view.appendChild(this.label());
+      this.view.appendChild(nestedDiv);
+      break;
+
+    case 'Number':
+    case 'String':
+      this.view.appendChild(this.label());
+
+      if (params.options) {
+        this.view.appendChild(this.select());
+        break;
+      }
+      
+      this.view.appendChild(this.text());
   }
-  
+
+  return this
+}
+
+
+/**
+ * Helper to create `<input />` text field
+ *
+ * @return {HTMLElement} field
+ * @api private
+ */
+
+Field.prototype.text = function() {
+  var field = document.createElement('input');
+  field.setAttribute('type', 'text');
+  field.setAttribute('name', this.name);
+  field.setAttribute('id', underscore(this.name));
+  if (this.data) field.setAttribute('value', this.data);
+  return field;
+}
+
+
+/**
+ * Helper to create `<label />` field
+ *
+ *
+ * @return {HTMLElement} field
+ * @api private
+ */
+
+Field.prototype.label = function() {
+  var field = document.createElement('label');
+  field.innerText = this.params.title
+  field.setAttribute('for', underscore(this.name));
+  return field;
+}
+
+
+/**
+ * Helper to create `<input />` checkbox field
+ *
+ * @return {HTMLElement} field
+ * @api private
+ */
+
+Field.prototype.checkbox = function() {
+  var field = document.createElement('input');
+  field.setAttribute('type', 'checkbox');
+  field.setAttribute('name', this.name);
+  field.setAttribute('id', underscore(this.name));
+  if (this.data) field.setAttribute('value', this.data);
+  return field;
+}
+
+
+/**
+ * Helper to create `<select />` field with `options`
+ *
+ * @return {HTMLElement} field
+ * @api private
+ */
+
+Field.prototype.select = function() {
+  var field = document.createElement('select');
+  field.setAttribute('name', this.name);
+  field.setAttribute('id', underscore(this.name));
+  for (var opt in this.params.options) {
+    var option = document.createElement('option');
+    option.setAttribute('value', opt);
+    option.innerText = this.params.options[opt];
+    field.appendChild(option);
+  }
+  return field;
+}
+
+
+/**
+ * Helper to wrap square brackets around all keys of
+ * `properties` and then prefix with `parent`
+ *
+ * @param {Object} properties
+ * @param {String} parent
+ * @return {Object} nested
+ * @api private
+ */
+
+function nestProperties(properties, parent) {
+  var nested = {};
+  for (var prop in properties) {
+    nested[parent + '[' + prop + ']'] = properties[prop];
+  }
+  return nested;
+}
+
+
+/**
+ * Helper to replace square brackets around `Str`
+ * and replace with underscore
+ *
+ * @param {String} str
+ * @return {String} str
+ * @api private
+ */
+
+function underscore(str) {
+  return str.replace('][', '_').replace('[', '_').replace(']', '')
 }

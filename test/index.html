@@ -8,17 +8,45 @@
     <script>
       var Form = require('forms')
       
-      form = new Form({book:{title:"Book Title", type:"String"}})
-      
-      form.on('attribute', function(a,b,c){
-        c(document.createElement('span'))
+      form = new Form({
+        book: {
+          title: "Book Title",
+          type: "String",
+          options: {
+            boom: "Boom",
+            bar: "Bar",
+            foo: "Foo"
+          }
+        },
+        thing: {
+          title: "Thing",
+          type: "Object",
+          properties: {
+            make: {
+              title: "Make",
+              type: "String"
+            },
+            model: {
+               title: "Model",
+               type: "String"
+            }
+          }
+        },
+        subscribe: {
+          title: "Subscribe",
+          type: "Boolean"
+        }
       })
+
       
-      form.on('attribute', function(a,b,c){
-        c(document.createElement('a'))
-      })
+      // form.on('attribute', function(name, options, overide){
+      //   if (name == 'book') return
+      //   overide(document.createElement('span'))
+      // })
       
       form.render()
+      
+      document.body.innerHTML = form.view.innerHTML
     </script>
   </body>
 </html>

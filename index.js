@@ -1,6 +1,7 @@
 /**
  * Module dependencies.
  */
+
 var Field = require('./field')
   , Emitter = require('emitter');
 
@@ -10,6 +11,7 @@ var Field = require('./field')
  */
 
 module.exports = Form;
+
 
 /**
  * Initialize a new `Form` with a `schema` object
@@ -26,11 +28,13 @@ function Form(schema, data) {
   this.data = data;
 }
 
+
 /**
  * Mixin emitter.
  */
 
 Emitter(Form.prototype);
+
 
 /**
  * Iterates through all attributes in `this.schema`
@@ -41,28 +45,25 @@ Emitter(Form.prototype);
  */
 
 Form.prototype.render = function() {
-  var self = this;
+  var self = this
     , view = document.createElement('div');
   
   this.view = view;
   
   for (var name in this.schema) {
+    
     var attribute = this.schema[name]
-      , custom = []
-      , data;
+      , data = null
+      , overide = false;
     
     if (this.data) data = this.data[name];
       
     this.emit('attribute', name, attribute, function(dom){
-      custom.push(dom);
+      view.appendChild(dom);
+      overide = true;
     })
     
-    if (custom.length > 1) {
-      custom.forEach(function(item){
-        view.appendChild(item);
-      });
-      continue;    
-    }
+    if (overide) continue;
     
     var field = new Field(name, attribute, data);
     view.appendChild(field.render().view);
