@@ -10,7 +10,7 @@
     <script>
       var Form = require('forms')
       
-      form = new Form({
+      var schema = {
         book: {
           title: "Book Title",
           type: "String",
@@ -38,7 +38,18 @@
           title: "Subscribe",
           type: "Boolean"
         }
-      })
+      }
+      
+      var data = {
+        book: 'foo',
+        subscribe: false,
+        thing: {
+          make: "Hello",
+          model: "there"
+        }
+      }
+      
+      form = new Form(schema, data)
 
       
       // form.on('attribute', function(name, options, overide){

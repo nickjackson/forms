@@ -11,7 +11,6 @@
 
 
 ## Todo
-* Allow fields to be pre filled with data
 * Add Date/Calendar functionality
 * Add Repeats
 * Add Tests

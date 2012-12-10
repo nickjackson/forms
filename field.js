@@ -64,8 +64,9 @@ Field.prototype.render = function() {
     case 'Object':
       var Form = require('./index');
       var properties = nestProperties(params.properties, this.name);
+      var data = nestProperties(this.data, this.name)
       
-      var form = new Form(properties, this.data);
+      var form = new Form(properties, data);
       form.render();
       form.view.className = form.view.className + ' nested';
 
@@ -134,7 +135,7 @@ Field.prototype.checkbox = function() {
   field.setAttribute('type', 'checkbox');
   field.setAttribute('name', this.name);
   field.setAttribute('id', underscore(this.name));
-  if (this.data) field.setAttribute('value', this.data);
+  if (this.data) field.checked = this.data
   return field;
 }
 
@@ -152,8 +153,10 @@ Field.prototype.select = function() {
   field.setAttribute('id', underscore(this.name));
   for (var opt in this.params.options) {
     var option = document.createElement('option');
+    var text = this.params.options[opt];
     option.setAttribute('value', opt);
-    option.innerText = this.params.options[opt];
+    option.innerText = text
+    if (this.data == opt) option.setAttribute('selected', true)
     field.appendChild(option);
   }
   return field;
