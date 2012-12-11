@@ -10,15 +10,10 @@
     <script>
       var Form = require('forms')
       
-      var schema = {
+      form = new Form({
         book: {
           title: "Book Title",
-          type: "String",
-          options: {
-            boom: "Boom",
-            bar: "Bar",
-            foo: "Foo"
-          }
+          type: "String"
         },
         thing: {
           title: "Thing",
@@ -38,19 +33,7 @@
           title: "Subscribe",
           type: "Boolean"
         }
-      }
-      
-      var data = {
-        book: 'foo',
-        subscribe: false,
-        thing: {
-          make: "Hello",
-          model: "there"
-        }
-      }
-      
-      form = new Form(schema, data)
-
+      })
       
       // form.on('attribute', function(name, options, overide){
       //   if (name == 'book') return

@@ -13,21 +13,20 @@ module.exports = Field;
 
 /**
  * Initialize a new `Field` with a `name` and
- * `properties` and prefill with `data` obj
+ * `properties`
  *
  * @param {String} name
  * @param {Object} properties
- * @param {Mixed} data
  * @api public
  */
 
-function Field(name, params, data) {
+function Field(name, params) {
   if (!name) throw Error('No name provided');
   if (!params) throw Error('No parameters provided');
 
   this.name = name;
   this.params = params;
-  this.data = data;
+  this.form = form;
 }
 
 
@@ -65,7 +64,7 @@ Field.prototype.render = function() {
 
     case 'Object':
       var Form = require('./index');
-      var form = new Form(params.properties, this.data);
+      var form = new Form(params.properties);
       form.render()
       form.view.className = form.view.className + ' nested';
 
@@ -84,24 +83,7 @@ Field.prototype.render = function() {
       
       this.view.appendChild(this.text());
   }
-
   return this
-}
-
-
-/**
- * Helper to create `<input />` text field
- *
- * @return {HTMLElement} field
- * @api private
- */
-
-Field.prototype.text = function() {
-  var field = document.createElement('input');
-  field.setAttribute('type', 'text');
-  field.setAttribute('id', this.id);
-  if (this.data) field.setAttribute('value', this.data);
-  return field;
 }
 
 
@@ -122,6 +104,22 @@ Field.prototype.label = function() {
 
 
 /**
+ * Helper to create `<input />` text field
+ *
+ * @return {HTMLElement} field
+ * @api private
+ */
+
+Field.prototype.text = function() {
+  var field = document.createElement('input');
+  field.setAttribute('type', 'text');
+  field.setAttribute('id', this.id);
+  
+  return field;
+}
+
+
+/**
  * Helper to create `<input />` checkbox field
  *
  * @return {HTMLElement} field
@@ -132,7 +130,6 @@ Field.prototype.checkbox = function() {
   var field = document.createElement('input');
   field.setAttribute('type', 'checkbox');
   field.setAttribute('id', this.id);
-  if (this.data) field.checked = this.data
   return field;
 }
 
@@ -153,7 +150,6 @@ Field.prototype.select = function() {
     var text = this.params.options[opt];
     option.setAttribute('value', opt);
     option.innerText = text;
-    if (this.data == opt) option.setAttribute('selected', true);
     field.appendChild(option);
   }
   return field;

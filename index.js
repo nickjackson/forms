@@ -15,17 +15,14 @@ module.exports = Form;
 
 /**
  * Initialize a new `Form` with a `schema` object
- * and prefill with `data` obj
  *
  * @param {Object} schema
- * @param {Object} data
  * @api public
  */
 
-function Form(schema, data) {
+function Form(schema) {
   if (!schema) throw Error('No schema provided');
   this.schema = schema;
-  this.data = data;
 }
 
 
@@ -54,10 +51,7 @@ Form.prototype.render = function() {
   for (var name in this.schema) {
     
     var attribute = this.schema[name]
-      , data = null
-      , overide = false;
-    
-    if (this.data) data = this.data[name];
+      , overide = false
       
     this.emit('attribute', name, attribute, function(dom){
       view.appendChild(dom);
@@ -66,7 +60,7 @@ Form.prototype.render = function() {
     
     if (overide) continue;
     
-    var field = new Field(name, attribute, data);
+    var field = new Field(name, attribute);
     view.appendChild(field.render().view);
   }
   
