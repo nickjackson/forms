@@ -5,13 +5,20 @@
   "version": "0.1.1",
   "keywords": ["form", "json", "dynamic"],
   "dependencies": {
-    "component/emitter": "*"
+    "component/emitter": "*",
+    "component/event": "*",
+    "component/object": "*",
+    "component/to-function": "*"
   },
   "development": {},
   "license": "MIT",
   "scripts": [
     "index.js",
-    "field.js"
+    "attribute.js",
+    "lib/checkbox.js",
+    "lib/textbox.js",
+    "lib/select.js",
+    "lib/label.js"
   ],
   "styles": [
     "forms.css"

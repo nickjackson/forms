@@ -11,9 +11,13 @@
       var Form = require('forms')
       
       form = new Form({
-        book: {
-          title: "Book Title",
-          type: "String"
+        number: {
+          title: "Number",
+          type: "String",
+          options: {
+            one: "One",
+            two: "Two"
+          }
         },
         thing: {
           title: "Thing",
@@ -32,6 +36,10 @@
         subscribe: {
           title: "Subscribe",
           type: "Boolean"
+        },
+        book: {
+          title: "Book Title",
+          type: "String"
         }
       })
       

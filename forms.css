@@ -2,24 +2,30 @@
   
 }
 
-.form .nested {
-  margin:0px 10px;
-}
-
 .form > .property {
   margin:8px 0px;
 }
 
-.nested > .property {
-  margin:3px 0px;
+.form > .nested {
+  margin:8px 0px;
 }
 
-.form > .property > label{
+
+.nested .property {
+  margin:3px 10px;
+}
+
+.form .property label{
   font-size:14px;
   margin-right:10px;
 }
 
-.form > .property > input[type=checkbox]{
+.form .nested label{
+  font-size:14px;
+  margin-right:10px;
+}
+
+.form .property input[type=checkbox]{
   margin-right:5px;
 }
 

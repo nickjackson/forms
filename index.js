@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var Field = require('./field')
+var Attribute = require('./attribute')
   , Emitter = require('emitter');
 
 
@@ -23,6 +23,7 @@ module.exports = Form;
 function Form(schema) {
   if (!schema) throw Error('No schema provided');
   this.schema = schema;
+  this.model = {};
 }
 
 
@@ -60,8 +61,9 @@ Form.prototype.render = function() {
     
     if (overide) continue;
     
-    var field = new Field(name, attribute);
-    view.appendChild(field.render().view);
+    this.model[name] = null;
+    var attribute = new Attribute(name, attribute, this.model);
+    view.appendChild(attribute.render().view);
   }
   
   return this;
