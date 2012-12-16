@@ -1,31 +1,65 @@
 .form {
-  
+  margin:40px;
 }
 
-.form > .property {
-  margin:8px 0px;
-}
-
-.form > .nested {
+.form .attribute {
   margin:8px 0px;
 }
 
 
-.nested .property {
-  margin:3px 10px;
+.nested .attribute {
+  display:inline-block;
+  margin:0px;
+  margin-left:5px;
 }
 
-.form .property label{
+.form label{
   font-size:14px;
   margin-right:10px;
 }
 
-.form .nested label{
-  font-size:14px;
-  margin-right:10px;
-}
-
-.form .property input[type=checkbox]{
+.form .attribute input[type=checkbox]{
   margin-right:5px;
+  display:inline;
 }
+
+.form .attribute select{
+  margin:5px 5px 5px 0px;
+}
+
+.form .repeats > .repeat {
+  margin:5px 0px;
+}
+
+.form .repeats > .repeat > * {
+  display:inline-block;
+  vertical-align: bottom;
+}
+
+.form .repeats > .repeat > .controls {
+  font-size:12px;
+  margin:0px 0px 4px 5px;
+}
+
+.form .repeats > .repeat .add {
+  display:none;
+}
+
+.form .repeats > .repeat:last-child .add {
+  display:inherit;
+}
+
+.form .controls a{
+  cursor:pointer;
+}
+
+.form .controls a:hover {
+  color:red;
+}
+
+input, select {
+  display:block;
+  margin:0px;
+}
+
 
