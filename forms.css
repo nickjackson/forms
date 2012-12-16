@@ -6,13 +6,6 @@
   margin:8px 0px;
 }
 
-
-.nested .attribute {
-  display:inline-block;
-  margin:0px;
-  margin-left:5px;
-}
-
 .form label{
   font-size:14px;
   margin-right:10px;
@@ -23,8 +16,11 @@
   display:inline;
 }
 
-.form .attribute select{
-  margin:5px 5px 5px 0px;
+.form .nested .attribute {
+  display:inline-block;
+  vertical-align: top;
+  margin:0px;
+  margin-left:5px;
 }
 
 .form .repeats > .repeat {
@@ -33,10 +29,11 @@
 
 .form .repeats > .repeat > * {
   display:inline-block;
-  vertical-align: bottom;
+  vertical-align: top;
 }
 
 .form .repeats > .repeat > .controls {
+  vertical-align: bottom;
   font-size:12px;
   margin:0px 0px 4px 5px;
 }
@@ -51,10 +48,6 @@
 
 .form .controls a{
   cursor:pointer;
-}
-
-.form .controls a:hover {
-  color:red;
 }
 
 input, select {
