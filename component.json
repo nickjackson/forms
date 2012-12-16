@@ -15,6 +15,7 @@
   "scripts": [
     "index.js",
     "attribute.js",
+    "template.js"
   ],
   "styles": [
     "forms.css"
