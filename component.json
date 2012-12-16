@@ -15,10 +15,6 @@
   "scripts": [
     "index.js",
     "attribute.js",
-    "lib/checkbox.js",
-    "lib/textbox.js",
-    "lib/select.js",
-    "lib/label.js"
   ],
   "styles": [
     "forms.css"
