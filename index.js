@@ -45,26 +45,26 @@ Emitter(Form.prototype);
 Form.prototype.render = function() {
   var self = this
     , view = document.createElement('div');
-  
+
   this.view = view;
   view.className = 'form'
-  
+
   for (var name in this.schema) {
-    
+
     var attribute = this.schema[name]
       , overide = false
-      
+
     this.emit('attribute', name, attribute, function(dom){
       view.appendChild(dom);
       overide = true;
     })
-    
+
     if (overide) continue;
-    
+
     this.model[name] = null;
     var attribute = new Attribute(name, attribute, this.model);
     view.appendChild(attribute.render().view);
   }
-  
+
   return this;
 }
