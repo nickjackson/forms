@@ -18,17 +18,14 @@
 
 ## API
 
-### new Form(schema)
+### var form = new Form(schema);
 Creates new Form object based on schema object
  
-### .render()
+### form.render()
 Renders form
  
-### .view
+### form.view
 Rendered DOM
-
-### .on('attribute', function(name, params, cb(dom)))
-Override a particular attribute by calling the callback with a DOM element
 
 ## License
 
