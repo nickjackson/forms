@@ -7,8 +7,7 @@
   "dependencies": {
     "component/emitter": "*",
     "component/event": "*",
-    "component/object": "*",
-    "component/to-function": "*"
+    "component/domify": "*"
   },
   "development": {},
   "license": "MIT",
