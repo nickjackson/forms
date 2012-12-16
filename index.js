@@ -23,7 +23,6 @@ module.exports = Form;
 function Form(schema) {
   if (!schema) throw Error('No schema provided');
   this.schema = schema;
-  this.model = {};
 }
 
 
@@ -43,28 +42,14 @@ Emitter(Form.prototype);
  */
 
 Form.prototype.render = function() {
-  var self = this
-    , view = document.createElement('div');
-
-  this.view = view;
-  view.className = 'form'
+  this.view = document.createElement('div');
+  this.view.className = 'form';
 
   for (var name in this.schema) {
-
-    var attribute = this.schema[name]
-      , overide = false
-
-    this.emit('attribute', name, attribute, function(dom){
-      view.appendChild(dom);
-      overide = true;
-    })
-
-    if (overide) continue;
-
-    this.model[name] = null;
-    var attribute = new Attribute(name, attribute, this.model);
-    view.appendChild(attribute.render().view);
+    var subSchema = this.schema[name]
+      , attribute = new Attribute(name, subSchema, this.model);
+      
+    this.view.appendChild(attribute.render().view);
   }
-
   return this;
 }

@@ -75,6 +75,7 @@ Attribute.prototype.render = function() {
   return this
 }
 
+
 /**
  * Render `self` as a textbox
  *
@@ -92,6 +93,7 @@ Attribute.prototype.textbox = function() {
   this.setRepeatNode(textbox);
   return attribute;
 }
+
 
 /**
  * Render `self` as a select box
@@ -118,6 +120,7 @@ Attribute.prototype.select = function() {
   return attribute;
 };
 
+
 /**
  * Render `self` as a checkbox
  *
@@ -129,7 +132,7 @@ Attribute.prototype.checkbox = function() {
   var params = this.params
     , attribute = domify(templates.checkbox)[0]
     , span = attribute.querySelector('span')
-    , input = attribute.querySelector('input')
+    , input = attribute.querySelector('input');
 
   span.innerText = params.title;
   this.setRepeatNode(input);
@@ -149,12 +152,13 @@ Attribute.prototype.object = function() {
   var params = this.params
     , attribute = domify(templates.object)[0]
     , label = attribute.querySelector('label')
-    , nested = attribute.querySelector('.nested')
+    , nested = attribute.querySelector('.nested');
 
   for (var property in params.properties) {
-    var subParams = params.properties[property];
-    var subName = this.name + '.' + property;
-    var subAttribute = new Attribute(subName, subParams);
+    var subParams = params.properties[property]
+      , subName = this.name + '.' + property
+      , subAttribute = new Attribute(subName, subParams);
+
     nested.appendChild(subAttribute.render().view);
   }
 
@@ -162,6 +166,7 @@ Attribute.prototype.object = function() {
   this.setRepeatNode(nested);
   return attribute;
 }
+
 
 /**
  * Sets the element to repeat
@@ -172,7 +177,7 @@ Attribute.prototype.object = function() {
  */
 
 Attribute.prototype.setRepeatNode = function(node){
-  if (!node) throw Error('Must specify dom node to repeat')
+  if (!node) throw Error('Must specify dom node to repeat');
   this.repeat = node;
   return this;
 }
@@ -247,7 +252,7 @@ Attribute.prototype.addRepeat = function(){
 
   // create repeat container and append
   // repeat clone and controls
-  var container = document.createElement('div')
+  var container = document.createElement('div');
   container.className = 'repeat';
   container.appendChild(repeat);
   container.appendChild(controls);
@@ -264,9 +269,9 @@ Attribute.prototype.addRepeat = function(){
 
 
 /**
- * Removes `field` if multiples is enabled
+ * Removes `node` if multiples is enabled
  *
- * @param {Node} field
+ * @param {Element} node
  * @return {Attribute} self
  * @api private
  */
