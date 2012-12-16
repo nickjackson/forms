@@ -57,8 +57,12 @@
       var Form = require('forms')
       
       form = new Form({
-        authors: {
-          title: "Authors",
+        name: {
+          title: "Movie Name",
+          type: "String"
+        },
+        actors: {
+          title: "Actors",
           type: "Object",
           repeat: "5",
           properties: {
@@ -82,14 +86,27 @@
             }
           }
         },
-        subscribe: {
-          title: "Subscribe",
-          type: "Boolean"
+        url: {
+          title: "URL",
+          type: "String"
         },
-        book: {
-          title: "Book Title",
+        review: {
+          title: "Review",
           type: "String",
-          repeat: "5"
+          options: {
+            ok: "Ok",
+            exciting: "Exciting",
+            boring: "Boring"
+          }
+        },
+        genres: {
+          title: "Genres",
+          type: "String",
+          repeat: "true"
+        },
+        recommend: {
+          title: "Would Recommend",
+          type: "Boolean"
         }
       })
       
