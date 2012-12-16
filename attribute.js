@@ -3,12 +3,8 @@
  */
 var Emitter = require('emitter')
   , event = require('event')
-  , toFunction = require('to-function')
-  , Textbox = require('./lib/textbox')
-  , Checkbox = require('./lib/checkbox')
-  , Select = require('./lib/select')
-  , Label = require('./lib/label')
-
+  , domify = require('domify')
+  , templates = require('./template');
 
 /**
  * Expose `Attribute`.
@@ -33,7 +29,7 @@ function Attribute(name, params, model) {
   this.name = name;
   this.params = params;
   this.model = model;
-  
+
 }
 
 
@@ -52,85 +48,233 @@ Emitter(Attribute.prototype);
  */
 
 Attribute.prototype.render = function() {
-  
-  this.view = document.createElement('div');
-  this.view.className = 'property';
-  
-  this.id = this.name.replace('.', '_')
-  
+  var view;
+
   switch (this.params.type) {
     case 'Date':
     case 'Number':
     case 'String':
-      this.String();
+      this.fn = this.params.options
+        ? this.select
+        : this.textbox;
       break;
 
-    case 'Boolean': 
-      this.Boolean();
+    case 'Boolean':
+      this.fn = this.checkbox;
       break;
 
     case 'Object':
-      this.Object();
+      this.fn = this.object;
       break;
   }
-  
+
+  this.view = this.params.repeat
+    ? this.repeats()
+    : this.fn();
+
   return this
 }
 
 /**
- * Method to deal with String Attributes
+ * Render `self` as a textbox
  *
+ * @return {Element} attribute
  * @api private
  */
 
-Attribute.prototype.String = function() {
+Attribute.prototype.textbox = function() {
   var params = this.params
-    , label = new Label(params.title, this.id)
-    , control = new Textbox(this.name, params);
-  
-  if (params.options) {
-    control = new Select(this.name, params);
-  }
-  
-  this.view.appendChild(label.view)
-  this.view.appendChild(control.view);
+    , attribute = domify(templates.textbox)[0]
+    , span = attribute.querySelector('span')
+    , textbox = attribute.querySelector('input');
+
+  span.innerText = params.title;
+  this.setRepeatNode(textbox);
+  return attribute;
 }
 
 /**
- * Method to deal with Boolean Attributes
+ * Render `self` as a select box
  *
+ * @return {Element} attribute
  * @api private
  */
 
-Attribute.prototype.Boolean = function() {
-  var checkbox = new Checkbox(this.name, this.params)
-    , label = new Label(this.params.title, this.id);
-  
-  this.view.appendChild(checkbox.view);
-  this.view.appendChild(label.view);
+Attribute.prototype.select = function() {
+  var params = this.params
+    , attribute = domify(templates.select)[0]
+    , span = attribute.querySelector('span')
+    , select = attribute.querySelector('select');
+
+  for (var option in params.options) {
+    var view = document.createElement('option')
+    view.setAttribute('value', option);
+    view.innerText = params.options[option];
+    select.appendChild(view);
+  }
+
+  span.innerText = params.title;
+  this.setRepeatNode(select);
+  return attribute;
+};
+
+/**
+ * Render `self` as a checkbox
+ *
+ * @return {Element} attribute
+ * @api private
+ */
+
+Attribute.prototype.checkbox = function() {
+  var params = this.params
+    , attribute = domify(templates.checkbox)[0]
+    , span = attribute.querySelector('span')
+    , input = attribute.querySelector('input')
+
+  span.innerText = params.title;
+  this.setRepeatNode(input);
+  return attribute;
 }
 
 
 /**
- * Method to deal with Object Attributes
+ * Render `self` by iterating sub-properties
+ * and rendering their particular dom types
  *
+ * @return {Element} attribute
  * @api private
  */
 
-Attribute.prototype.Object = function() {
+Attribute.prototype.object = function() {
   var params = this.params
-    , object = document.createElement('div')
-    , label = new Label(params.title);
+    , attribute = domify(templates.object)[0]
+    , label = attribute.querySelector('label')
+    , nested = attribute.querySelector('.nested')
 
-  for (var prop in params.properties) {
-    var property = params.properties[prop];
-    var nested = this.name + '.' + prop;
-    var attribute = new Attribute(nested, property);
-    object.appendChild(attribute.render().view);
+  for (var property in params.properties) {
+    var subParams = params.properties[property];
+    var subName = this.name + '.' + property;
+    var subAttribute = new Attribute(subName, subParams);
+    nested.appendChild(subAttribute.render().view);
   }
-  
-  
-  this.view.className = 'nested';
-  this.view.appendChild(label.view);
-  this.view.appendChild(object);
+
+  label.innerText = params.title;
+  this.setRepeatNode(nested);
+  return attribute;
+}
+
+/**
+ * Sets the element to repeat
+ *
+ * @param {Element} node
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.setRepeatNode = function(node){
+  if (!node) throw Error('Must specify dom node to repeat')
+  this.repeat = node;
+  return this;
+}
+
+
+/**
+ * Enables repeating of a certain attribute
+ *
+ * @return {Element} attribute
+ * @api private
+ */
+
+Attribute.prototype.repeats = function() {
+  // call the attribute render function
+  var attribute = this.fn();
+
+  // set the container to append new repeats too
+  this.repeatContainer = document.createElement('div');
+  this.repeatContainer.className = 'repeats';
+
+  // parent for repeats
+  var parent = this.repeat.parentNode;
+
+  // remove default repeat node
+  parent.removeChild(this.repeat);
+
+  // if parent is a Label set to label parent
+  var pConstructor = parent.constructor.toString();
+  if (pConstructor.indexOf('HTMLLabelElement') != -1){
+    parent = parent.parentNode;
+  }
+
+  // append repeats to parent of label
+  parent.appendChild(this.repeatContainer);
+
+  // set repeat count
+  this.repeatCount = 0;
+
+  // set repeat max by checking repeat param
+  // for Boolean or else Integer
+  if (this.params.repeat !== true) {
+    this.repeatMax = parseInt(this.params.repeat);
+  }
+
+  // append new node with repeat controls
+  this.addRepeat();
+
+  return attribute;
+}
+
+
+/**
+ * Adds another field if multiples is enabled
+ *
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.addRepeat = function(){
+  var repeat = this.repeat.cloneNode(true)
+    , controls = domify(templates.controls)[0]
+    , add = controls.querySelector('.add')
+    , remove = controls.querySelector('.remove');
+
+  // only add repeat if within maximum
+  if (this.repeatMax) {
+    if (this.repeatCount >= this.repeatMax) return;
+  }
+
+  // adjust repeat count
+  this.repeatCount++;
+
+  // create repeat container and append
+  // repeat clone and controls
+  var container = document.createElement('div')
+  container.className = 'repeat';
+  container.appendChild(repeat);
+  container.appendChild(controls);
+
+  // append container to repeatContainer
+  this.repeatContainer.appendChild(container);
+
+  // bind click events
+  event.bind(add, 'click', this.addRepeat.bind(this));
+  event.bind(remove, 'click', this.removeRepeat.bind(this, container));
+
+  return this;
+}
+
+
+/**
+ * Removes `field` if multiples is enabled
+ *
+ * @param {Node} field
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.removeRepeat = function(node){
+  var parent = node.parentNode;
+  parent.removeChild(node);
+  this.repeatCount--;
+  if (this.repeatCount == 0) this.addRepeat();
+  return self;
 }

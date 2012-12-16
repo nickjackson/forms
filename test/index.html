@@ -3,7 +3,40 @@
     <title></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="../build/build.css" type="text/css">
-    
+    <style>
+    .form {
+      font-family: arial, sans-serif;
+    }
+    .form label {
+      font-size:13px;
+      color:gray;
+    }
+    .form .nested label {
+      font-size:11px;
+    }
+    .form input[type="text"] {
+      margin-top:2px;
+      height:25px;
+      width:120px;
+      padding:2px;
+    }
+    .form .attribute {
+      padding:10px 0px;
+      margin:0px;
+      border-bottom:1px solid #E5E5E5;
+    }
+    .form .attribute:first-child {
+      border-top:1px solid #E5E5E5;
+    }
+    .form .nested .attribute {
+      margin:0px;
+      padding:0px 5px 0px 0px;
+      border:none;
+    }
+    .form .nested .attribute:last-child {
+      margin:0px
+    }
+    </style>
   </head>
   <body>
     <script src="../build/build.js"></script>
@@ -11,24 +44,27 @@
       var Form = require('forms')
       
       form = new Form({
-        number: {
-          title: "Number",
-          type: "String",
-          options: {
-            one: "One",
-            two: "Two"
-          }
-        },
-        thing: {
-          title: "Thing",
+        authors: {
+          title: "Authors",
           type: "Object",
+          repeat: "5",
           properties: {
-            make: {
-              title: "Make",
+            title: {
+              title: "Title",
+              type: "String",
+              options: {
+                mr: "Mr",
+                mrs: "Mrs",
+                dr: "Dr",
+                miss: "Miss"
+              }
+            },
+            forename: {
+              title: "Forename",
               type: "String"
             },
-            model: {
-               title: "Model",
+            surname: {
+               title: "Surname",
                type: "String"
             }
           }
@@ -39,7 +75,8 @@
         },
         book: {
           title: "Book Title",
-          type: "String"
+          type: "String",
+          repeat: "5"
         }
       })
       
