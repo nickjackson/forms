@@ -1,0 +1,26 @@
+{
+  "name": "forms",
+  "repo": "nickjackson/forms",
+  "description": "create rich forms dynamically by providing a JSON schema",
+  "version": "0.2.0",
+  "keywords": [
+    "form",
+    "json",
+    "dynamic"
+  ],
+  "dependencies": {
+    "component/emitter": "*",
+    "component/event": "*",
+    "component/domify": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js",
+    "attribute.js",
+    "template.js"
+  ],
+  "styles": [
+    "forms.css"
+  ]
+}

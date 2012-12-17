@@ -1,0 +1,60 @@
+
+
+
+.form {
+  margin: 40px
+}
+
+.form .attribute {
+  margin: 8px 0px
+}
+
+.form label {
+  font-size: 14px;
+  margin-right: 10px
+}
+
+.form .attribute input[type=checkbox] {
+  margin-right: 5px;
+  display: inline
+}
+
+.form .nested .attribute {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0px;
+  margin-left: 5px
+}
+
+.form .repeats > .repeat {
+  margin: 5px 0px
+}
+
+.form .repeats > .repeat > * {
+  display: inline-block;
+  vertical-align: top
+}
+
+.form .repeats > .repeat > .controls {
+  vertical-align: bottom;
+  font-size: 12px;
+  margin: 0px 0px 4px 5px
+}
+
+.form .repeats > .repeat .add {
+  display: none
+}
+
+.form .repeats > .repeat:last-child .add {
+  display: inherit
+}
+
+.form .controls a {
+  cursor: pointer
+}
+
+input,
+select {
+  display: block;
+  margin: 0px
+}
