@@ -1,0 +1,151 @@
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="build/build.css" type="text/css">
+    <style>
+    .form {
+      float:left;
+      font-family: arial, sans-serif;
+    }
+    .form label {
+      font-size:13px;
+      color:gray;
+    }
+    .form .nested label {
+      font-size:11px;
+    }
+    .form input[type="text"] {
+      margin-top:2px;
+      height:25px;
+      width:120px;
+      padding:2px;
+    }
+    .form select {
+      margin-top:2px;
+    }
+    .form .attribute {
+      padding:10px 0px;
+      margin:0px;
+      border-bottom:1px solid #E5E5E5;
+    }
+    .form .attribute:first-child {
+      border-top:1px solid #E5E5E5;
+    }
+    .form .nested .attribute {
+      margin:0px;
+      padding:0px 5px 0px 0px;
+      border:none;
+    }
+    .form .nested .attribute:last-child {
+      margin:0px
+    }
+    .form .repeats > .repeat {
+      margin:10px 0px;
+    }
+    .form .repeats > .repeat > .controls {
+      font-size:11px;
+      color:gray;
+    }
+    .form .repeats .attribute {
+      margin-right:10px;
+    }
+    .options {
+      float:right;
+      margin:50px;
+    }
+    .options textarea {
+      height:400px;
+      width:250px;
+      font-size:13px;
+      color:#404040;
+    }
+    .options button {
+      margin-top:10px;
+      width:100px;
+      height:25px;
+      display:block;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="content"></div>
+    <div class="options">
+      <textarea></textarea>
+      <button onclick="renderForm()">Reset</button>
+    </div>
+    <script src="build/build.js"></script>
+    <script>
+      var Form = require('nickjackson-forms');
+      
+      var content = document.querySelector('.content');
+      var textarea = document.querySelector('textarea');
+      
+      function renderForm(){
+        var value = textarea.value;
+        var json = JSON.parse(value);
+        var form = new Form(json);
+        form.render();
+        content.innerHTML = '';
+        content.appendChild(form.view);
+      }
+      
+      var schema = {
+        name: {
+          title: "Movie Name",
+          type: "String"
+        },
+        actors: {
+          title: "Actors",
+          type: "Object",
+          repeat: "5",
+          properties: {
+            title: {
+              title: "Title",
+              type: "String",
+              options: {
+                mr: "Mr",
+                mrs: "Mrs",
+                dr: "Dr",
+                miss: "Miss"
+              }
+            },
+            forename: {
+              title: "Forename",
+              type: "String"
+            },
+            surname: {
+               title: "Surname",
+               type: "String"
+            }
+          }
+        },
+        url: {
+          title: "URL",
+          type: "String"
+        },
+        review: {
+          title: "Review",
+          type: "String",
+          options: {
+            ok: "Ok",
+            exciting: "Exciting",
+            boring: "Boring"
+          }
+        },
+        genres: {
+          title: "Genres",
+          type: "String",
+          repeat: "true"
+        },
+        recommend: {
+          title: "Would Recommend",
+          type: "Boolean"
+        }
+      };
+      
+      textarea.value = JSON.stringify(schema, null, 2);
+      renderForm();
+    </script>
+  </body>
+</html>
