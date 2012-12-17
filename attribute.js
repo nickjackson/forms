@@ -90,6 +90,7 @@ Attribute.prototype.textbox = function() {
     , textbox = attribute.querySelector('input');
 
   span.innerText = params.title;
+  textbox.setAttribute('name', this.name);
   this.setRepeatNode(textbox);
   return attribute;
 }
@@ -116,6 +117,7 @@ Attribute.prototype.select = function() {
   }
 
   span.innerText = params.title;
+  select.setAttribute('name', this.name);
   this.setRepeatNode(select);
   return attribute;
 };
@@ -135,6 +137,7 @@ Attribute.prototype.checkbox = function() {
     , input = attribute.querySelector('input');
 
   span.innerText = params.title;
+  input.setAttribute('name', this.name);
   this.setRepeatNode(input);
   return attribute;
 }
@@ -156,7 +159,7 @@ Attribute.prototype.object = function() {
 
   for (var property in params.properties) {
     var subParams = params.properties[property]
-      , subName = this.name + '.' + property
+      , subName = this.name + '[' + property + ']'
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
@@ -191,6 +194,9 @@ Attribute.prototype.setRepeatNode = function(node){
  */
 
 Attribute.prototype.repeats = function() {
+  // set name to array
+  this.name = this.name + '[]';
+
   // call the attribute render function
   var attribute = this.fn();
 
