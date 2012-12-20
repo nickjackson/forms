@@ -18,16 +18,16 @@ module.exports = Attribute;
  * `properties`
  *
  * @param {String} name
- * @param {Object} properties
+ * @param {Object} obj
  * @api public
  */
 
-function Attribute(name, params, model) {
+function Attribute(name, obj, model) {
   if (!name) throw Error('No name provided');
-  if (!params) throw Error('No parameters provided');
+  if (!obj) throw Error('No parameters provided');
 
   this.name = name;
-  this.params = params;
+  this.obj = obj;
   this.model = model;
 
 }
@@ -50,11 +50,11 @@ Emitter(Attribute.prototype);
 Attribute.prototype.render = function() {
   var view;
 
-  switch (this.params.type) {
+  switch (this.obj.type) {
     case 'Date':
     case 'Number':
     case 'String':
-      this.fn = this.params.options
+      this.fn = this.obj.options
         ? this.select
         : this.textbox;
       break;
@@ -68,7 +68,7 @@ Attribute.prototype.render = function() {
       break;
   }
 
-  this.view = this.params.repeat
+  this.view = this.obj.repeat
     ? this.repeats()
     : this.fn();
 
@@ -84,12 +84,12 @@ Attribute.prototype.render = function() {
  */
 
 Attribute.prototype.textbox = function() {
-  var params = this.params
+  var obj = this.obj
     , attribute = domify(templates.textbox)[0]
     , span = attribute.querySelector('span')
     , textbox = attribute.querySelector('input');
 
-  span.innerText = params.title;
+  span.innerText = obj.title;
   textbox.setAttribute('name', this.name);
   this.setRepeatNode(textbox);
   return attribute;
@@ -104,19 +104,19 @@ Attribute.prototype.textbox = function() {
  */
 
 Attribute.prototype.select = function() {
-  var params = this.params
+  var obj = this.obj
     , attribute = domify(templates.select)[0]
     , span = attribute.querySelector('span')
     , select = attribute.querySelector('select');
 
-  for (var option in params.options) {
+  for (var option in obj.options) {
     var view = document.createElement('option')
     view.setAttribute('value', option);
-    view.innerText = params.options[option];
+    view.innerText = obj.options[option];
     select.appendChild(view);
   }
 
-  span.innerText = params.title;
+  span.innerText = obj.title;
   select.setAttribute('name', this.name);
   this.setRepeatNode(select);
   return attribute;
@@ -131,12 +131,12 @@ Attribute.prototype.select = function() {
  */
 
 Attribute.prototype.checkbox = function() {
-  var params = this.params
+  var obj = this.obj
     , attribute = domify(templates.checkbox)[0]
     , span = attribute.querySelector('span')
     , input = attribute.querySelector('input');
 
-  span.innerText = params.title;
+  span.innerText = obj.title;
   input.setAttribute('name', this.name);
   this.setRepeatNode(input);
   return attribute;
@@ -152,20 +152,21 @@ Attribute.prototype.checkbox = function() {
  */
 
 Attribute.prototype.object = function() {
-  var params = this.params
+  var obj = this.obj
+    , this.properties = {}
     , attribute = domify(templates.object)[0]
     , label = attribute.querySelector('label')
     , nested = attribute.querySelector('.nested');
 
-  for (var property in params.properties) {
-    var subParams = params.properties[property]
+  for (var property in obj.properties) {
+    var subParams = obj.properties[property]
       , subName = this.name + '[' + property + ']'
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
   }
 
-  label.innerText = params.title;
+  label.innerText = obj.title;
   this.setRepeatNode(nested);
   return attribute;
 }
@@ -224,8 +225,8 @@ Attribute.prototype.repeats = function() {
 
   // set repeat max by checking repeat param
   // for Boolean or else Integer
-  if (this.params.repeat !== true) {
-    this.repeatMax = parseInt(this.params.repeat);
+  if (this.obj.repeat !== true) {
+    this.repeatMax = parseInt(this.obj.repeat);
   }
 
   // append new node with repeat controls
