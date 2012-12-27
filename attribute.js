@@ -170,7 +170,7 @@ Attribute.prototype.object = function() {
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
-    el[property] = subAttribute.field;
+    el[property] = subAttribute.el;
   }
 
   label.innerText = obj.title;
@@ -370,7 +370,7 @@ function elementValue(field){
 function objectValue(fields){
   var value = {};
   for (var field in fields) {
-    value[field] = getValue(field)
+    value[field] = getValue(fields[field])
   }
   return value;
 }
