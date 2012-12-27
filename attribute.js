@@ -50,29 +50,30 @@ Emitter(Attribute.prototype);
 Attribute.prototype.render = function() {
   var view;
 
+  if (this.obj.repeat) {
+    this.view = this.repeats();
+    return this;
+  }
+
   switch (this.obj.type) {
     case 'Date':
     case 'Number':
     case 'String':
-      this.fn = this.obj.options
-        ? this.select
-        : this.textbox;
+      this.view = this.obj.options
+        ? this.select()
+        : this.textbox();
       break;
 
     case 'Boolean':
-      this.fn = this.checkbox;
+      this.view = this.checkbox();
       break;
 
     case 'Object':
-      this.fn = this.object;
+      this.view = this.object();
       break;
   }
 
-  this.view = this.obj.repeat
-    ? this.repeats()
-    : this.fn();
-
-  return this
+  return this;
 }
 
 
@@ -92,6 +93,7 @@ Attribute.prototype.textbox = function() {
   span.innerText = obj.title;
   textbox.setAttribute('name', this.name);
   this.setRepeatNode(textbox);
+  this.setField(textbox);
   return attribute;
 }
 
@@ -119,6 +121,7 @@ Attribute.prototype.select = function() {
   span.innerText = obj.title;
   select.setAttribute('name', this.name);
   this.setRepeatNode(select);
+  this.setField(select);
   return attribute;
 };
 
@@ -139,6 +142,7 @@ Attribute.prototype.checkbox = function() {
   span.innerText = obj.title;
   input.setAttribute('name', this.name);
   this.setRepeatNode(input);
+  this.setField(input);
   return attribute;
 }
 
@@ -153,7 +157,7 @@ Attribute.prototype.checkbox = function() {
 
 Attribute.prototype.object = function() {
   var obj = this.obj
-    , this.properties = {}
+    , field = {}
     , attribute = domify(templates.object)[0]
     , label = attribute.querySelector('label')
     , nested = attribute.querySelector('.nested');
@@ -164,10 +168,12 @@ Attribute.prototype.object = function() {
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
+    field[property] = subAttribute.field;
   }
 
   label.innerText = obj.title;
   this.setRepeatNode(nested);
+  this.setField(field);
   return attribute;
 }
 
@@ -186,6 +192,20 @@ Attribute.prototype.setRepeatNode = function(node){
   return this;
 }
 
+/**
+ * Sets the main field
+ *
+ * @param {Element} node
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.setField = function(node){
+  if (!node) throw Error('Must specify dom node');
+  this.field = node;
+  return this;
+}
+
 
 /**
  * Enables repeating of a certain attribute
@@ -198,22 +218,23 @@ Attribute.prototype.repeats = function() {
   // set name to array
   this.name = this.name + '[]';
 
+  // set this.field to array
+  this.field = [];
+
   // call the attribute render function
-  var attribute = this.fn();
+  var attribute = this.repeatAttribute();
 
   // set the container to append new repeats too
   this.repeatContainer = document.createElement('div');
   this.repeatContainer.className = 'repeats';
 
-  // parent for repeats
-  var parent = this.repeat.parentNode;
-
+  // parent of repeat
+  var parent = attribute.repeat.parentNode;
   // remove default repeat node
-  parent.removeChild(this.repeat);
+  parent.removeChild(attribute.repeat);
 
   // if parent is a Label set to label parent
-  var pConstructor = parent.constructor.toString();
-  if (pConstructor.indexOf('HTMLLabelElement') != -1){
+  if (parent.nodeName.toLowerCase() == 'label'){
     parent = parent.parentNode;
   }
 
@@ -232,7 +253,7 @@ Attribute.prototype.repeats = function() {
   // append new node with repeat controls
   this.addRepeat();
 
-  return attribute;
+  return attribute.view;
 }
 
 
@@ -244,7 +265,8 @@ Attribute.prototype.repeats = function() {
  */
 
 Attribute.prototype.addRepeat = function(){
-  var repeat = this.repeat.cloneNode(true)
+  var attribute = this.repeatAttribute()
+    , repeat = attribute.repeat
     , controls = domify(templates.controls)[0]
     , add = controls.querySelector('.add')
     , remove = controls.querySelector('.remove');
@@ -256,6 +278,9 @@ Attribute.prototype.addRepeat = function(){
 
   // adjust repeat count
   this.repeatCount++;
+
+  // add to field
+  this.field.push(attribute.field);
 
   // create repeat container and append
   // repeat clone and controls
@@ -269,7 +294,7 @@ Attribute.prototype.addRepeat = function(){
 
   // bind click events
   event.bind(add, 'click', this.addRepeat.bind(this));
-  event.bind(remove, 'click', this.removeRepeat.bind(this, container));
+  event.bind(remove, 'click', this.removeRepeat.bind(this, container, this.repeatCount - 1));
 
   return this;
 }
@@ -283,10 +308,13 @@ Attribute.prototype.addRepeat = function(){
  * @api private
  */
 
-Attribute.prototype.removeRepeat = function(node){
+Attribute.prototype.removeRepeat = function(node, id){
   var parent = node.parentNode;
   parent.removeChild(node);
   this.repeatCount--;
+
+  this.field.splice(id, 1);
+
   if (this.repeatCount == 0) this.addRepeat();
   return self;
 }
