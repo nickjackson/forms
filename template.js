@@ -1,9 +1,9 @@
-exports.textbox = '<div class="attribute"><label><span></span><input type="text"></input></label></div>'
+exports.textbox = '<div class="attribute"><label>{{title}}<input type="text"{{^name}} name="{{name}}"{{/name}}></input></label></div>';
 
-exports.checkbox = '<div class="attribute"><label><input type="checkbox"><span></span></input></label></div>'
+exports.checkbox = '<div class="attribute"><label><input type="checkbox"{{^name}} name="{{name}}"{{/name}}></input>{{title}}</label></div>';
 
-exports.select = '<div class="attribute"><label><span></span><select></select></label></div>'
+exports.select = '<div class="attribute"><label>{{title}}<select {{^name}} name="{{name}}"{{/name}}></select></label></div>';
 
-exports.object = '<div class="attribute"><label></label><div class="nested"></div></div>'
+exports.object = '<div class="attribute"><label>{{title}}</label><div class="nested"></div></div>';
 
-exports.controls = '<div class="controls"><a class="remove">remove</a> <a class="add">add</a></div>'
+exports.controls = '<div class="controls"><a class="remove">remove</a> <a class="add">add</a></div>';

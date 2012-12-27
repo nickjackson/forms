@@ -9,6 +9,7 @@
     "component/event": "*",
     "component/domify": "*",
     "component/type": "*",
+    "visionmedia/minstache": "*",
     "nickjackson/val": "*"
   },
   "development": {},

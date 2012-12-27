@@ -6,6 +6,7 @@ var Emitter = require('emitter')
   , domify = require('domify')
   , templates = require('./template')
   , type = require('type')
+  , minstache = require('minstache')
   , val = require('val');
 
 /**
@@ -24,13 +25,15 @@ module.exports = Attribute;
  * @api public
  */
 
-function Attribute(name, obj, model) {
+function Attribute(name, obj) {
   if (!name) throw Error('No name provided');
   if (!obj) throw Error('No parameters provided');
 
   this.name = name;
-  this.obj = obj;
-  this.model = model;
+
+  for (var ob in obj) {
+    this[ob] = obj[ob]
+  }
 
 }
 
@@ -51,17 +54,17 @@ Emitter(Attribute.prototype);
 
 Attribute.prototype.render = function() {
   var view;
-
-  if (this.obj.repeat) {
+  if (this.repeat) {
     this.view = this.repeats();
     return this;
   }
 
-  switch (this.obj.type) {
+  switch (this.type) {
     case 'Date':
     case 'Number':
     case 'String':
-      this.view = this.obj.options
+
+      this.view = this.options
         ? this.select()
         : this.textbox();
       break;
@@ -87,13 +90,9 @@ Attribute.prototype.render = function() {
  */
 
 Attribute.prototype.textbox = function() {
-  var obj = this.obj
-    , attribute = domify(templates.textbox)[0]
-    , span = attribute.querySelector('span')
+  var attribute = domify(minstache(templates.textbox, this))[0]
     , textbox = attribute.querySelector('input');
 
-  span.innerText = obj.title;
-  textbox.setAttribute('name', this.name);
   this.setRepeatNode(textbox);
   this.setElement(textbox);
   return attribute;
@@ -108,20 +107,16 @@ Attribute.prototype.textbox = function() {
  */
 
 Attribute.prototype.select = function() {
-  var obj = this.obj
-    , attribute = domify(templates.select)[0]
-    , span = attribute.querySelector('span')
+  var attribute = domify(minstache(templates.select, this))[0]
     , select = attribute.querySelector('select');
 
-  for (var option in obj.options) {
+  for (var option in this.options) {
     var view = document.createElement('option')
     view.setAttribute('value', option);
-    view.innerText = obj.options[option];
+    view.innerText = this.options[option];
     select.appendChild(view);
   }
 
-  span.innerText = obj.title;
-  select.setAttribute('name', this.name);
   this.setRepeatNode(select);
   this.setElement(select);
   return attribute;
@@ -136,13 +131,9 @@ Attribute.prototype.select = function() {
  */
 
 Attribute.prototype.checkbox = function() {
-  var obj = this.obj
-    , attribute = domify(templates.checkbox)[0]
-    , span = attribute.querySelector('span')
+  var attribute = domify(minstache(templates.checkbox, this))[0]
     , input = attribute.querySelector('input');
 
-  span.innerText = obj.title;
-  input.setAttribute('name', this.name);
   this.setRepeatNode(input);
   this.setElement(input);
   return attribute;
@@ -158,14 +149,12 @@ Attribute.prototype.checkbox = function() {
  */
 
 Attribute.prototype.object = function() {
-  var obj = this.obj
-    , el = {}
-    , attribute = domify(templates.object)[0]
-    , label = attribute.querySelector('label')
-    , nested = attribute.querySelector('.nested');
+  var attribute = domify(minstache(templates.object, this))[0]
+    , nested = attribute.querySelector('.nested')
+    , el = {};
 
-  for (var property in obj.properties) {
-    var subParams = obj.properties[property]
+  for (var property in this.properties) {
+    var subParams = this.properties[property]
       , subName = this.name + '[' + property + ']'
       , subAttribute = new Attribute(subName, subParams);
 
@@ -173,7 +162,6 @@ Attribute.prototype.object = function() {
     el[property] = subAttribute.el;
   }
 
-  label.innerText = obj.title;
   this.setRepeatNode(nested);
   this.setElement(el);
   return attribute;
@@ -217,8 +205,8 @@ Attribute.prototype.setElement = function(el){
  */
 
 Attribute.prototype.repeatAttribute = function(){
-  var attribute = new Attribute(this.name, this.obj);
-  delete attribute.obj.repeat;
+  var attribute = new Attribute(this.name, this);
+  delete attribute.repeat;
   return attribute.render();
 }
 
@@ -262,8 +250,8 @@ Attribute.prototype.repeats = function() {
 
   // set repeat max by checking repeat param
   // for Boolean or else Integer
-  if (this.obj.repeat !== true) {
-    this.repeatMax = parseInt(this.obj.repeat);
+  if (this.repeat !== true) {
+    this.repeatMax = parseInt(this.repeat);
   }
 
   // append new node with repeat controls
