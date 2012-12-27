@@ -7,7 +7,9 @@
   "dependencies": {
     "component/emitter": "*",
     "component/event": "*",
-    "component/domify": "*"
+    "component/domify": "*",
+    "component/type": "*",
+    "nickjackson/val": "*"
   },
   "development": {},
   "license": "MIT",

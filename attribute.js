@@ -4,7 +4,9 @@
 var Emitter = require('emitter')
   , event = require('event')
   , domify = require('domify')
-  , templates = require('./template');
+  , templates = require('./template')
+  , type = require('type')
+  , val = require('val');
 
 /**
  * Expose `Attribute`.
@@ -93,7 +95,7 @@ Attribute.prototype.textbox = function() {
   span.innerText = obj.title;
   textbox.setAttribute('name', this.name);
   this.setRepeatNode(textbox);
-  this.setField(textbox);
+  this.setElement(textbox);
   return attribute;
 }
 
@@ -121,7 +123,7 @@ Attribute.prototype.select = function() {
   span.innerText = obj.title;
   select.setAttribute('name', this.name);
   this.setRepeatNode(select);
-  this.setField(select);
+  this.setElement(select);
   return attribute;
 };
 
@@ -142,7 +144,7 @@ Attribute.prototype.checkbox = function() {
   span.innerText = obj.title;
   input.setAttribute('name', this.name);
   this.setRepeatNode(input);
-  this.setField(input);
+  this.setElement(input);
   return attribute;
 }
 
@@ -157,7 +159,7 @@ Attribute.prototype.checkbox = function() {
 
 Attribute.prototype.object = function() {
   var obj = this.obj
-    , field = {}
+    , el = {}
     , attribute = domify(templates.object)[0]
     , label = attribute.querySelector('label')
     , nested = attribute.querySelector('.nested');
@@ -168,12 +170,12 @@ Attribute.prototype.object = function() {
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
-    field[property] = subAttribute.field;
+    el[property] = subAttribute.field;
   }
 
   label.innerText = obj.title;
   this.setRepeatNode(nested);
-  this.setField(field);
+  this.setElement(el);
   return attribute;
 }
 
@@ -193,17 +195,31 @@ Attribute.prototype.setRepeatNode = function(node){
 }
 
 /**
- * Sets the main field
+ * Sets the main element
  *
  * @param {Element} node
  * @return {Attribute} self
  * @api private
  */
 
-Attribute.prototype.setField = function(node){
-  if (!node) throw Error('Must specify dom node');
-  this.field = node;
+Attribute.prototype.setElement = function(el){
+  if (!el) throw Error('Must specify dom node');
+  this.el = el;
   return this;
+}
+
+
+/**
+ * Return new Attribute without repeat enabled
+ *
+ * @return {Attribute} attribute
+ * @api private
+ */
+
+Attribute.prototype.repeatAttribute = function(){
+  var attribute = new Attribute(this.name, this.obj);
+  delete attribute.obj.repeat;
+  return attribute.render();
 }
 
 
@@ -218,8 +234,8 @@ Attribute.prototype.repeats = function() {
   // set name to array
   this.name = this.name + '[]';
 
-  // set this.field to array
-  this.field = [];
+  // set this.el to array
+  this.el = [];
 
   // call the attribute render function
   var attribute = this.repeatAttribute();
@@ -280,7 +296,7 @@ Attribute.prototype.addRepeat = function(){
   this.repeatCount++;
 
   // add to field
-  this.field.push(attribute.field);
+  this.el.push(attribute.el);
 
   // create repeat container and append
   // repeat clone and controls
@@ -313,8 +329,57 @@ Attribute.prototype.removeRepeat = function(node, id){
   parent.removeChild(node);
   this.repeatCount--;
 
-  this.field.splice(id, 1);
+  this.el.splice(id, 1);
 
   if (this.repeatCount == 0) this.addRepeat();
   return self;
+}
+
+/**
+ * Gets the value of the current field
+ *
+ * @return {Multiple} value
+ * @api private
+ */
+
+Attribute.prototype.getValue = function(){
+  return getValue(this.el);
+}
+
+
+/**
+ * functions used to itterate fields and
+ * get their values.
+ *
+ * @api private
+ */
+
+
+function getValue(field) {
+  if (field.nodeType) return elementValue(field);
+  if (type(field) == 'object') return objectValue(field);
+  if (type(field) == 'array') return arrayValue(field);
+}
+
+
+function elementValue(field){
+  return val(field);
+}
+
+
+function objectValue(fields){
+  var value = {};
+  for (var field in fields) {
+    value[field] = getValue(field)
+  }
+  return value;
+}
+
+
+function arrayValue(fields){
+  var value = [];
+  fields.forEach(function(field){
+    value.push(getValue(field))
+  })
+  return value;
 }
