@@ -199,7 +199,6 @@ Attribute.prototype.repeats = function() {
   // set this.el to array
   this.el = [];
 
-
   // render array dom
   var dom = domify(minstache(templates.repeats, this))[0];
 
@@ -231,7 +230,6 @@ Attribute.prototype.repeats = function() {
 
 Attribute.prototype.addRepeat = function(){
   var attribute = this.repeatAttribute()
-    , repeat = attribute.repeat
     , controls = domify(templates.controls)[0]
     , add = controls.querySelector('.add')
     , remove = controls.querySelector('.remove');
@@ -251,7 +249,7 @@ Attribute.prototype.addRepeat = function(){
   // repeat clone and controls
   var container = document.createElement('div');
   container.className = 'repeat';
-  container.appendChild(repeat);
+  container.appendChild(attribute.repeatNode);
   container.appendChild(controls);
 
   // append container to repeatContainer
