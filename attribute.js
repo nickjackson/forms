@@ -32,7 +32,7 @@ function Attribute(name, obj) {
   this.name = name;
 
   for (var ob in obj) {
-    this[ob] = obj[ob]
+    this[ob] = obj[ob];
   }
 
 }
@@ -53,7 +53,6 @@ Emitter(Attribute.prototype);
  */
 
 Attribute.prototype.render = function() {
-  var view;
   if (this.repeat) {
     this.view = this.repeats();
     return this;
@@ -63,7 +62,6 @@ Attribute.prototype.render = function() {
     case 'Date':
     case 'Number':
     case 'String':
-
       this.view = this.options
         ? this.select()
         : this.textbox();
