@@ -53,6 +53,9 @@ Emitter(Attribute.prototype);
  */
 
 Attribute.prototype.render = function() {
+  // check to see if repeats are enabled and then
+  // run .repeats()
+  if (this.repeat == "false") this.repeat = false;
   if (this.repeat) {
     this.view = this.repeats();
     return this;
