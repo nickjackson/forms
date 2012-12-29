@@ -281,6 +281,22 @@ Attribute.prototype.removeRepeat = function(node, id){
 }
 
 /**
+ * Reset repeats by deleting dom and stuff
+ *
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.resetRepeats = function(){
+  this.repeatContainer.innerHTML = '';
+  this.repeatCount = 0;
+  this.el = [];
+
+  return this;
+}
+
+
+/**
  * Gets the value of the current field
  *
  * @return {Multiple} value
