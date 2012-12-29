@@ -180,7 +180,7 @@ Attribute.prototype.object = function() {
 
 Attribute.prototype.repeatAttribute = function(){
   var attribute = new Attribute(this.name, this);
-  delete attribute.repeat;
+  attribute.repeat = false;
   return attribute.render();
 }
 
