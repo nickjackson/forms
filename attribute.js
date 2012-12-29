@@ -267,19 +267,17 @@ Attribute.prototype.addRepeat = function(){
  * Removes `node` if multiples is enabled
  *
  * @param {Element} node
+ * @param {Integer} id
  * @return {Attribute} self
  * @api private
  */
 
 Attribute.prototype.removeRepeat = function(node, id){
-  var parent = node.parentNode;
-  parent.removeChild(node);
+  this.repeatContainer.removeChild(node);
   this.repeatCount--;
-
   this.el.splice(id, 1);
 
-  if (this.repeatCount == 0) this.addRepeat();
-  return self;
+  return this;
 }
 
 /**
