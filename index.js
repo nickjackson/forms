@@ -73,3 +73,19 @@ Form.prototype.getValue = function(){
   }
   return values;
 }
+
+/**
+ * Iterates through all attributes and
+ * set their values;
+ *
+ * @param {Object} data
+ * @return {Form} this
+ * @api public
+ */
+
+Form.prototype.setValue = function(data){
+  for (var attr in this.attributes) {
+    var attribute = this.attributes[attr]
+    attribute.setValue(data[attr])
+  }
+}
