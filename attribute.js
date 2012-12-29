@@ -304,43 +304,72 @@ Attribute.prototype.resetRepeats = function(){
  */
 
 Attribute.prototype.getValue = function(){
-  return getValue(this.el);
+  return getSetValue(this.el);
+}
+
+
+/**
+ * Sets the value of the current field
+ *
+ * @params {Multiple} value
+ * @returns {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.setValue = function(value){
+  if (type(value) == 'array') {
+    this.resetRepeats();
+    for (var i = this.repeatCount; i < value.length; i++) {
+      this.addRepeat();
+    }
+  }
+  getSetValue(this.el, value);
+  return this;
 }
 
 
 /**
  * functions used to itterate fields and
- * get their values.
+ * get/set their values.
  *
  * @api private
  */
 
 
-function getValue(field) {
-  if (field.nodeType) return elementValue(field);
-  if (type(field) == 'object') return objectValue(field);
-  if (type(field) == 'array') return arrayValue(field);
+function getSetValue(field, data) {
+  if (field.nodeType) return elementValue(field, data);
+  if (type(field) == 'object') return objectValue(field, data);
+  if (type(field) == 'array') return arrayValue(field, data);
 }
 
 
-function elementValue(field){
-  return val(field);
+function elementValue(field, value){
+  return val(field, value);
 }
 
 
-function objectValue(fields){
+function objectValue(fields, data){
   var value = {};
   for (var field in fields) {
-    value[field] = getValue(fields[field])
+    if (data && data[field]) {
+      value[field] = getSetValue(fields[field], data[field]);
+    } else {
+      value[field] = getSetValue(fields[field]);
+    }
   }
   return value;
 }
 
 
-function arrayValue(fields){
+function arrayValue(fields, data){
   var value = [];
-  fields.forEach(function(field){
-    value.push(getValue(field))
-  })
+  fields.forEach(function(field, index){
+    if (data && data[index]) {
+      value.push(getSetValue(field, data[index]));
+    } else {
+      value.push(getSetValue(field));
+    }
+
+  });
   return value;
 }
