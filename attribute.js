@@ -86,32 +86,32 @@ Attribute.prototype.render = function() {
 
 
 /**
- * Render `self` as a textbox
+ * Render `self` as a textbox and return dom
  *
- * @return {Element} attribute
+ * @return {Element} dom
  * @api private
  */
 
 Attribute.prototype.textbox = function() {
-  var attribute = domify(minstache(templates.textbox, this))[0]
-    , textbox = attribute.querySelector('input');
+  var dom = domify(minstache(templates.textbox, this))[0]
+    , textbox = dom.querySelector('input');
 
-  this.setRepeatNode(textbox);
-  this.setElement(textbox);
-  return attribute;
+  this.repeatNode = textbox;
+  this.el = textbox;
+  return dom;
 }
 
 
 /**
- * Render `self` as a select box
+ * Render `self` as a select box and return dom
  *
- * @return {Element} attribute
+ * @return {Element} dom
  * @api private
  */
 
 Attribute.prototype.select = function() {
-  var attribute = domify(minstache(templates.select, this))[0]
-    , select = attribute.querySelector('select');
+  var dom = domify(minstache(templates.select, this))[0]
+    , select = dom.querySelector('select');
 
   for (var option in this.options) {
     var view = document.createElement('option')
@@ -120,26 +120,26 @@ Attribute.prototype.select = function() {
     select.appendChild(view);
   }
 
-  this.setRepeatNode(select);
-  this.setElement(select);
-  return attribute;
+  this.repeatNode = select;
+  this.el = select;
+  return dom;
 };
 
 
 /**
- * Render `self` as a checkbox
+ * Render `self` as a checkbox and return dom
  *
- * @return {Element} attribute
+ * @return {Element} dom
  * @api private
  */
 
 Attribute.prototype.checkbox = function() {
-  var attribute = domify(minstache(templates.checkbox, this))[0]
-    , input = attribute.querySelector('input');
+  var dom = domify(minstache(templates.checkbox, this))[0]
+    , input = dom.querySelector('input');
 
-  this.setRepeatNode(input);
-  this.setElement(input);
-  return attribute;
+  this.repeatNode = input;
+  this.el = input;
+  return dom;
 }
 
 
@@ -147,14 +147,15 @@ Attribute.prototype.checkbox = function() {
  * Render `self` by iterating sub-properties
  * and rendering their particular dom types
  *
- * @return {Element} attribute
+ * @return {Element} dom
  * @api private
  */
 
 Attribute.prototype.object = function() {
-  var attribute = domify(minstache(templates.object, this))[0]
-    , nested = attribute.querySelector('.nested')
-    , el = {};
+  var dom = domify(minstache(templates.object, this))[0]
+    , nested = dom.querySelector('.nested');
+
+  this.el = {};
 
   for (var property in this.properties) {
     var subParams = this.properties[property]
@@ -162,41 +163,11 @@ Attribute.prototype.object = function() {
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
-    el[property] = subAttribute.el;
+    this.el[property] = subAttribute.el;
   }
 
-  this.setRepeatNode(nested);
-  this.setElement(el);
-  return attribute;
-}
-
-
-/**
- * Sets the element to repeat
- *
- * @param {Element} node
- * @return {Attribute} self
- * @api private
- */
-
-Attribute.prototype.setRepeatNode = function(node){
-  if (!node) throw Error('Must specify dom node to repeat');
-  this.repeat = node;
-  return this;
-}
-
-/**
- * Sets the main element
- *
- * @param {Element} node
- * @return {Attribute} self
- * @api private
- */
-
-Attribute.prototype.setElement = function(el){
-  if (!el) throw Error('Must specify dom node');
-  this.el = el;
-  return this;
+  this.repeatNode = nested;
+  return dom;
 }
 
 
