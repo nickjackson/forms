@@ -188,7 +188,7 @@ Attribute.prototype.repeatAttribute = function(){
 /**
  * Enables repeating of a certain attribute
  *
- * @return {Element} attribute
+ * @return {Element} dom
  * @api private
  */
 
@@ -199,39 +199,26 @@ Attribute.prototype.repeats = function() {
   // set this.el to array
   this.el = [];
 
-  // call the attribute render function
-  var attribute = this.repeatAttribute();
 
-  // set the container to append new repeats too
-  this.repeatContainer = document.createElement('div');
-  this.repeatContainer.className = 'repeats';
+  // render array dom
+  var dom = domify(minstache(templates.repeats, this))[0];
 
-  // parent of repeat
-  var parent = attribute.repeat.parentNode;
-  // remove default repeat node
-  parent.removeChild(attribute.repeat);
+  // set container for repeats
+  this.repeatContainer = dom.querySelector('.repeats');
 
-  // if parent is a Label set to label parent
-  if (parent.nodeName.toLowerCase() == 'label'){
-    parent = parent.parentNode;
-  }
-
-  // append repeats to parent of label
-  parent.appendChild(this.repeatContainer);
+  // bind click events
+  var add = dom.querySelector('.add');
+  event.bind(add, 'click', this.addRepeat.bind(this));
 
   // set repeat count
   this.repeatCount = 0;
 
-  // set repeat max by checking repeat param
-  // for Boolean or else Integer
-  if (this.repeat !== true) {
-    this.repeatMax = parseInt(this.repeat);
+  // set repeat max by checking if Integer
+  if (max = parseInt(this.repeat)) {
+    this.repeatMax = max;
   }
 
-  // append new node with repeat controls
-  this.addRepeat();
-
-  return attribute.view;
+  return dom;
 }
 
 
