@@ -61,10 +61,12 @@ Attribute.prototype.render = function() {
     return this;
   }
 
+  // check field types and run their associated render fns.
   switch (this.type) {
     case 'Date':
     case 'Number':
     case 'String':
+      // checks for specified options
       this.view = this.options
         ? this.select()
         : this.textbox();
