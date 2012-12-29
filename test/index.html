@@ -55,7 +55,7 @@
     <script src="../build/build.js"></script>
     <script>
       var Form = require('forms')
-      
+
       form = new Form({
         name: {
           title: "Movie Name",
@@ -109,12 +109,6 @@
           type: "Boolean"
         }
       })
-      
-      // form.on('attribute', function(name, options, overide){
-      //   if (name == 'book') return
-      //   overide(document.createElement('span'))
-      // })
-      
       form.render()
       
       document.body.appendChild(form.view)
