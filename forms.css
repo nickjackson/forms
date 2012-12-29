@@ -23,6 +23,10 @@
   margin-left:5px;
 }
 
+.form .attribute > .add {
+  font-size:12px;
+}
+
 .form .repeats > .repeat {
   margin:5px 0px;
 }
