@@ -275,7 +275,7 @@ Attribute.prototype.addRepeat = function(){
 Attribute.prototype.removeRepeat = function(node, id){
   var add = node.querySelector('.add')
     , remove = node.querySelector('.remove');
-  
+
   event.unbind(add);
   event.unbind(remove);
   this.repeatContainer.removeChild(node);
