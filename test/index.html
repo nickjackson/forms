@@ -109,8 +109,26 @@
           type: "Boolean"
         }
       })
+
+      var data = {
+        name: "The foo of bar",
+        actors: [{
+          forename: "Nick",
+          surname: "Jackson",
+          title: "mr"
+        }, {
+          forename: "Foo",
+          surname: "Bar",
+          title: "dr"
+        }],
+        url: "http://google.com",
+        genres: ['thriller', 'action'],
+        recommend: true,
+        review: 'exciting'
+      }
+
       form.render()
-      
+
       document.body.appendChild(form.view)
     </script>
   </body>
