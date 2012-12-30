@@ -196,7 +196,8 @@ Attribute.prototype.object = function() {
  */
 
 Attribute.prototype.repeatAttribute = function(){
-  var attribute = new Attribute(this.name, this);
+  var name = this.name + this.repeatCount;
+  var attribute = new Attribute(name, this);
   attribute.repeat = false;
   return attribute.render();
 }
