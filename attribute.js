@@ -324,80 +324,50 @@ Attribute.prototype.resetRepeats = function(){
 }
 
 
+
 /**
- * Gets the value of the current field
+ * set and return value of nested attributes in object
  *
- * @return {Multiple} value
+ * @return {Object} value
  * @api private
  */
 
-Attribute.prototype.getValue = function(){
-  return getSetValue(this.el);
+function objectValue(data){
+  value = {};
+  for (var attr in this.attributes) {
+    var attribute = this.attributes[attr];
+    if (data && data[attr]) {
+      value[attr] = attribute.value(data[attr]);
+    } else {
+      value[attr] = attribute.value();
+    }
+  }
+  return value;
 }
 
 
+
 /**
- * Sets the value of the current field
+ * set and return value of nested attributes in array
  *
- * @params {Multiple} value
- * @returns {Attribute} self
+ * @return {Array} value
  * @api private
  */
 
-Attribute.prototype.setValue = function(value){
-  if (type(value) == 'array') {
+function arrayValue(data){
+  // make sure enough repeated rows in place.
+  if (data && type(data) == 'array') {
     this.resetRepeats();
-    for (var i = this.repeatCount; i < value.length; i++) {
+    for (var i = this.repeatCount; i < data.length; i++) {
       this.addRepeat();
     }
   }
-  getSetValue(this.el, value);
-  return this;
-}
 
-
-/**
- * functions used to itterate fields and
- * get/set their values.
- *
- * @api private
- */
-
-
-function getSetValue(field, data) {
-  if (field.nodeType) return elementValue(field, data);
-  if (type(field) == 'object') return objectValue(field, data);
-  if (type(field) == 'array') return arrayValue(field, data);
-}
-
-
-function elementValue(field, value){
-  return val(field, value);
-}
-
-
-function objectValue(fields, data){
-  var value = {};
-  for (var field in fields) {
-    if (data && data[field]) {
-      value[field] = getSetValue(fields[field], data[field]);
-    } else {
-      value[field] = getSetValue(fields[field]);
-    }
-  }
-  return value;
-}
-
-
-function arrayValue(fields, data){
-  var value = [];
-  fields.forEach(function(field, index){
+  return this.attributes.map(function(attribute, index){
     if (data && data[index]) {
-      value.push(getSetValue(field, data[index]));
+      return attribute.value(data[index]);
     } else {
-      value.push(getSetValue(field));
+      return attribute.value();
     }
-
   });
-  return value;
 }
