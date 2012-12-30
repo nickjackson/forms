@@ -68,8 +68,8 @@ Form.prototype.render = function() {
 Form.prototype.getValue = function(){
   var values = {}
   for (var attr in this.attributes) {
-    var attribute = this.attributes[attr]
-    values[attr] = attribute.getValue();
+    var attribute = this.attributes[attr];
+    values[attr] = attribute.value();
   }
   return values;
 }
@@ -84,8 +84,10 @@ Form.prototype.getValue = function(){
  */
 
 Form.prototype.setValue = function(data){
+  var values = {}
   for (var attr in this.attributes) {
-    var attribute = this.attributes[attr]
-    attribute.setValue(data[attr])
+    var attribute = this.attributes[attr];
+    values[attr] = attribute.value(data[attr]);
   }
+  return values;
 }
