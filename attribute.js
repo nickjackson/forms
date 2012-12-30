@@ -174,7 +174,7 @@ Attribute.prototype.object = function() {
 
   for (var property in this.properties) {
     var subParams = this.properties[property]
-      , subName = this.name + '[' + property + ']'
+      , subName = this.name + '.' + property
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
