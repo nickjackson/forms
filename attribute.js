@@ -38,11 +38,13 @@ function Attribute(name, obj) {
 }
 
 
+
 /**
  * Mixin emitter.
  */
 
 Emitter(Attribute.prototype);
+
 
 
 /**
@@ -85,6 +87,7 @@ Attribute.prototype.render = function() {
 }
 
 
+
 /**
  * Render `self` as a textbox and return dom
  *
@@ -100,6 +103,7 @@ Attribute.prototype.textbox = function() {
   this.el = textbox;
   return dom;
 }
+
 
 
 /**
@@ -126,6 +130,7 @@ Attribute.prototype.select = function() {
 };
 
 
+
 /**
  * Render `self` as a checkbox and return dom
  *
@@ -141,6 +146,7 @@ Attribute.prototype.checkbox = function() {
   this.el = input;
   return dom;
 }
+
 
 
 /**
@@ -171,6 +177,7 @@ Attribute.prototype.object = function() {
 }
 
 
+
 /**
  * Return new Attribute without repeat enabled
  *
@@ -183,6 +190,7 @@ Attribute.prototype.repeatAttribute = function(){
   attribute.repeat = false;
   return attribute.render();
 }
+
 
 
 /**
@@ -219,6 +227,7 @@ Attribute.prototype.repeats = function() {
 
   return dom;
 }
+
 
 
 /**
@@ -263,6 +272,7 @@ Attribute.prototype.addRepeat = function(){
 }
 
 
+
 /**
  * Removes `node` if multiples is enabled
  *
@@ -284,6 +294,8 @@ Attribute.prototype.removeRepeat = function(node, id){
 
   return this;
 }
+
+
 
 /**
  * Reset repeats by deleting dom and stuff
