@@ -16,6 +16,15 @@ var Emitter = require('emitter')
 module.exports = Attribute;
 
 
+
+/**
+ * safe options for the attribute schema
+ */
+
+var safe = ['options', 'type', 'title', 'repeat', 'properties'];
+
+
+
 /**
  * Initialize a new `Attribute` with a `name` and
  * `properties`
@@ -25,16 +34,16 @@ module.exports = Attribute;
  * @api public
  */
 
-function Attribute(name, obj) {
+function Attribute(name, schema) {
   if (!name) throw Error('No name provided');
-  if (!obj) throw Error('No parameters provided');
+  if (!schema) throw Error('No parameters provided');
 
-  this.name = name;
-
-  for (var ob in obj) {
-    this[ob] = obj[ob];
+  for (var opt in schema) {
+    if (safe.indexOf(opt) == -1) continue;
+    this[opt] = schema[opt];
   }
 
+  this.name = name;
 }
 
 
