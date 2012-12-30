@@ -109,7 +109,7 @@ Attribute.prototype.textbox = function() {
     , textbox = dom.querySelector('input');
 
   this.repeatNode = textbox;
-  this.el = textbox;
+  this.value = val.bind(this, textbox);
   return dom;
 }
 
@@ -134,7 +134,7 @@ Attribute.prototype.select = function() {
   }
 
   this.repeatNode = select;
-  this.el = select;
+  this.value = val.bind(this, select);
   return dom;
 };
 
@@ -152,7 +152,7 @@ Attribute.prototype.checkbox = function() {
     , input = dom.querySelector('input');
 
   this.repeatNode = input;
-  this.el = input;
+  this.value = val.bind(this, input);
   return dom;
 }
 
@@ -170,7 +170,7 @@ Attribute.prototype.object = function() {
   var dom = domify(minstache(templates.object, this))[0]
     , nested = dom.querySelector('.nested');
 
-  this.el = {};
+  this.attributes = {};
 
   for (var property in this.properties) {
     var subParams = this.properties[property]
@@ -178,10 +178,11 @@ Attribute.prototype.object = function() {
       , subAttribute = new Attribute(subName, subParams);
 
     nested.appendChild(subAttribute.render().view);
-    this.el[property] = subAttribute.el;
+    this.attributes[property] = subAttribute;
   }
 
   this.repeatNode = nested;
+  this.value = objectValue.bind(this);
   return dom;
 }
 
@@ -214,7 +215,8 @@ Attribute.prototype.repeats = function() {
   this.name = this.name + '[]';
 
   // set this.el to array
-  this.el = [];
+  this.attributes = [];
+  this.value = arrayValue.bind(this);
 
   // render array dom
   var dom = domify(minstache(templates.repeats, this))[0];
@@ -260,8 +262,8 @@ Attribute.prototype.addRepeat = function(){
   // adjust repeat count
   this.repeatCount++;
 
-  // add to field
-  this.el.push(attribute.el);
+  // add nested attribute
+  this.attributes.push(attribute);
 
   // create repeat container and append
   // repeat clone and controls
@@ -299,7 +301,7 @@ Attribute.prototype.removeRepeat = function(node, id){
   event.unbind(remove);
   this.repeatContainer.removeChild(node);
   this.repeatCount--;
-  this.el.splice(id, 1);
+  this.attributes.splice(id, 1);
 
   return this;
 }
@@ -316,7 +318,7 @@ Attribute.prototype.removeRepeat = function(node, id){
 Attribute.prototype.resetRepeats = function(){
   this.repeatContainer.innerHTML = '';
   this.repeatCount = 0;
-  this.el = [];
+  this.attributes = [];
 
   return this;
 }
