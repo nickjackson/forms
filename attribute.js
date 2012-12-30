@@ -212,8 +212,6 @@ Attribute.prototype.repeatAttribute = function(){
  */
 
 Attribute.prototype.repeats = function() {
-  // set name tag to array
-  this.name = this.name + '[]';
 
   // set this.el to array
   this.attributes = [];
