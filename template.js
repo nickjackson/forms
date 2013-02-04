@@ -6,6 +6,6 @@ exports.select = '<div class="attribute"><label>{{title}}<select></select></labe
 
 exports.object = '<div class="attribute"><label>{{title}}</label><div class="nested"></div></div>';
 
-exports.repeats = '<div class="attribute"><label>{{title}}</label><a class="add" href="#">add</a><div class="repeats"></div></div>';
+exports.repeats = '<div class="attribute"><label>{{title}}</label><a class="add">add</a><div class="repeats"></div></div>';
 
-exports.controls = '<div class="controls"><a class="remove" href="#">remove</a> <a class="add" href="#">add</a></div>';
+exports.controls = '<div class="controls"><a class="remove">remove</a> <a class="add">add</a></div>';
