@@ -1,3 +1,7 @@
+0.2.1 / 2013-02-04
+==================
+* Removing anchor href tags
+
 0.2.0 / 2012-12-16
 ==================
 * Pretty much redesigned the whole thing
