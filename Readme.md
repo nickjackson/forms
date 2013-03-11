@@ -23,6 +23,12 @@ Creates new Form object based on schema object
  
 ### form.render()
 Renders form
+
+### form.setValue({})
+Fills in rendered form with data given
+
+### form.getValue()
+Returns object of current values
  
 ### form.view
 Rendered DOM
