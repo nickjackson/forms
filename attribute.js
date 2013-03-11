@@ -105,11 +105,9 @@ Attribute.prototype.render = function() {
  */
 
 Attribute.prototype.textbox = function() {
-  var dom = domify(minstache(templates.textbox, this))[0]
-    , textbox = dom.querySelector('input');
+  var dom = domify(minstache(templates.textbox, this))[0];
+  this.node = dom.querySelector('input');
 
-  this.repeatNode = textbox;
-  this.value = val.bind(this, textbox);
   return dom;
 }
 
@@ -123,18 +121,10 @@ Attribute.prototype.textbox = function() {
  */
 
 Attribute.prototype.select = function() {
-  var dom = domify(minstache(templates.select, this))[0]
-    , select = dom.querySelector('select');
+  var dom = domify(minstache(templates.select, this))[0];
+  this.node = dom.querySelector('select');
 
-  for (var option in this.options) {
-    var view = document.createElement('option')
-    view.setAttribute('value', option);
-    view.innerText = this.options[option];
-    select.appendChild(view);
-  }
-
-  this.repeatNode = select;
-  this.value = val.bind(this, select);
+  val(this.node).options(this.options);
   return dom;
 };
 
@@ -148,11 +138,12 @@ Attribute.prototype.select = function() {
  */
 
 Attribute.prototype.checkbox = function() {
-  var dom = domify(minstache(templates.checkbox, this))[0]
-    , input = dom.querySelector('input');
+  var dom = domify(minstache(templates.checkbox, this))[0];
+  var input = this.node = dom.querySelector('input');
 
-  this.repeatNode = input;
-  this.value = val.bind(this, input);
+  this.value = function(data){
+    return val(input).checked(data)
+  }
   return dom;
 }
 
@@ -168,7 +159,7 @@ Attribute.prototype.checkbox = function() {
 
 Attribute.prototype.object = function() {
   var dom = domify(minstache(templates.object, this))[0]
-    , nested = dom.querySelector('.nested');
+  this.node = dom.querySelector('.nested');
 
   this.attributes = {};
 
@@ -177,11 +168,10 @@ Attribute.prototype.object = function() {
       , subName = this.name + '.' + property
       , subAttribute = new Attribute(subName, subParams);
 
-    nested.appendChild(subAttribute.render().view);
+    this.node.appendChild(subAttribute.render().view);
     this.attributes[property] = subAttribute;
   }
 
-  this.repeatNode = nested;
   this.value = objectValue.bind(this);
   return dom;
 }
@@ -268,7 +258,7 @@ Attribute.prototype.addRepeat = function(){
   // repeat clone and controls
   var container = document.createElement('div');
   container.className = 'repeat';
-  container.appendChild(attribute.repeatNode);
+  container.appendChild(attribute.node);
   container.appendChild(controls);
 
   // append container to repeatContainer
@@ -323,6 +313,19 @@ Attribute.prototype.resetRepeats = function(){
 }
 
 
+/**
+ * Set/Get value of current node
+ *
+ * @param {String} data
+ * @return {Attribute} self
+ * @api private
+ */
+
+Attribute.prototype.value = function(data) {
+  return val(this.node).value(data);
+}
+
+
 
 /**
  * set and return value of nested attributes in object
@@ -335,11 +338,13 @@ function objectValue(data){
   value = {};
   for (var attr in this.attributes) {
     var attribute = this.attributes[attr];
+
     if (data && data[attr]) {
       value[attr] = attribute.value(data[attr]);
-    } else {
-      value[attr] = attribute.value();
+      continue;
     }
+
+    value[attr] = attribute.value();
   }
   return value;
 }
