@@ -1,3 +1,7 @@
+0.3.0 / 2013-03-11
+==================
+* Updating val for api change
+
 0.2.1 / 2013-02-04
 ==================
 * Removing anchor href tags
